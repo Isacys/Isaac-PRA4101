@@ -1,0 +1,749 @@
+---
+title: 'Unidad 5: Manipulación de datos en R con dplyr'
+author: "Isaac Alexander Morales Arevalo"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+  html_document:
+    toc: true
+    toc_depth: 3
+    theme: flatly
+---
+
+# Unidad 5: Manipulación de datos en R
+
+En esta unidad aprenderemos algunas funciones muy importantes para trabajar con bases de datos en R.
+
+Usaremos principalmente el paquete `dplyr`, que sirve para manipular tablas de datos de una forma clara y sencilla.
+
+Las funciones principales que estudiaremos son:
+
+-   `select()`: seleccionar columnas.
+-   `filter()`: filtrar filas.
+-   `mutate()`: crear nuevas columnas.
+-   `summarise()`: resumir información.
+-   `group_by()`: agrupar datos.
+-   `arrange()`: ordenar datos.
+
+------------------------------------------------------------------------
+
+# 1. Cargar paquetes
+
+Primero cargamos el paquete `dplyr`.
+
+```{r}
+library(dplyr)
+```
+
+Si no tienes instalado el paquete, puedes instalarlo con:
+
+```{r, eval=FALSE}
+install.packages("dplyr")
+```
+
+------------------------------------------------------------------------
+
+# 2. Bases de datos incluidas en R
+
+R ya trae algunas bases de datos incorporadas. Por ejemplo:
+
+-   `mtcars`: información sobre automóviles.
+-   `iris`: información sobre flores.
+-   `airquality`: datos de calidad del aire.
+-   `ToothGrowth`: crecimiento dental en conejillos de indias.
+-   `PlantGrowth`: crecimiento de plantas.
+
+Veamos una de ellas.
+
+```{r}
+data(mtcars)
+head(mtcars)
+```
+
+La base `mtcars` contiene información sobre distintos modelos de automóviles.
+
+Algunas columnas son:
+
+-   `mpg`: millas por galón.
+-   `cyl`: número de cilindros.
+-   `disp`: desplazamiento del motor.
+-   `hp`: caballos de fuerza.
+-   `wt`: peso del automóvil.
+-   `gear`: número de marchas.
+
+------------------------------------------------------------------------
+
+# 3. La función `select()`
+
+La función `select()` sirve para seleccionar columnas específicas de una base de datos.
+
+Por ejemplo, si queremos quedarnos solamente con las columnas `mpg`, `cyl` y `hp`, hacemos:
+
+```{r}
+mtcars %>%
+  select(mpg, cyl, hp)
+```
+
+Aquí estamos diciendo:
+
+> De la base `mtcars`, selecciona únicamente las columnas `mpg`, `cyl` y `hp`.
+
+También podemos excluir columnas usando el signo menos.
+
+```{r}
+mtcars %>%
+  select(-disp)
+```
+
+Esto devuelve la base `mtcars`, pero sin la columna `disp`.
+
+------------------------------------------------------------------------
+
+# 4. La función `filter()`
+
+La función `filter()` sirve para seleccionar filas que cumplen cierta condición.
+
+Por ejemplo, seleccionemos los automóviles que tienen 6 cilindros.
+
+```{r}
+mtcars %>%
+  filter(cyl == 6)
+```
+
+El símbolo `==` significa “igual a”.
+
+También podemos usar otras condiciones:
+
+```{r}
+mtcars %>%
+  filter(mpg > 25)
+```
+
+Esto selecciona los automóviles que tienen más de 25 millas por galón.
+
+Podemos combinar condiciones.
+
+```{r}
+mtcars %>%
+  filter(cyl == 4, mpg > 25)
+```
+
+Esto selecciona automóviles que cumplen dos condiciones:
+
+1.  Tienen 4 cilindros.
+2.  Tienen más de 25 millas por galón.
+
+------------------------------------------------------------------------
+
+# 5. La función `mutate()`
+
+La función `mutate()` sirve para crear nuevas columnas.
+
+Por ejemplo, la variable `wt` representa el peso del automóvil en miles de libras. Podemos crear una nueva columna que represente el peso aproximado en libras.
+
+```{r}
+mtcars %>%
+  mutate(peso_libras = wt * 1000)
+```
+
+También podemos crear columnas usando varias variables.
+
+```{r}
+mtcars %>%
+  mutate(relacion_hp_peso = hp / wt)
+```
+
+Aquí creamos una nueva variable llamada `relacion_hp_peso`, que mide cuántos caballos de fuerza hay por unidad de peso.
+
+------------------------------------------------------------------------
+
+# 6. La función `summarise()`
+
+La función `summarise()` sirve para obtener resúmenes de los datos.
+
+Por ejemplo, calculemos el promedio de millas por galón.
+
+```{r}
+mtcars %>%
+  summarise(promedio_mpg = mean(mpg))
+```
+
+También podemos calcular varios resúmenes al mismo tiempo.
+
+```{r}
+mtcars %>%
+  summarise(
+    promedio_mpg = mean(mpg),
+    maximo_hp = max(hp),
+    minimo_hp = min(hp),
+    promedio_peso = mean(wt)
+  )
+```
+
+------------------------------------------------------------------------
+
+# 7. La función `group_by()`
+
+La función `group_by()` sirve para agrupar los datos según una variable.
+
+Por ejemplo, podemos agrupar los automóviles según el número de cilindros.
+
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+  summarise(promedio_mpg = mean(mpg))
+```
+
+Esto calcula el promedio de millas por galón para cada grupo de cilindros.
+
+Es decir:
+
+-   Promedio de `mpg` para autos de 4 cilindros.
+-   Promedio de `mpg` para autos de 6 cilindros.
+-   Promedio de `mpg` para autos de 8 cilindros.
+
+También podemos calcular más estadísticas por grupo.
+
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+  summarise(
+    promedio_mpg = mean(mpg),
+    promedio_hp = mean(hp),
+    cantidad_autos = n()
+  )
+```
+
+La función `n()` cuenta cuántas observaciones hay en cada grupo.
+
+------------------------------------------------------------------------
+
+# 8. La función `arrange()`
+
+La función `arrange()` sirve para ordenar una base de datos según una o varias columnas.
+
+Por ejemplo, ordenemos los automóviles según `mpg`.
+
+```{r}
+mtcars %>%
+  arrange(mpg)
+```
+
+Por defecto, `arrange()` ordena de menor a mayor.
+
+Es decir, primero aparecen los automóviles con menor valor de `mpg`.
+
+------------------------------------------------------------------------
+
+## 8.1 Ordenar de mayor a menor
+
+Si queremos ordenar de mayor a menor, usamos `desc()`.
+
+```{r}
+mtcars %>%
+  arrange(desc(mpg))
+```
+
+Ahora aparecen primero los automóviles con mayor rendimiento de combustible.
+
+------------------------------------------------------------------------
+
+## 8.2 Ordenar por varias columnas
+
+También podemos ordenar usando varias columnas.
+
+Por ejemplo:
+
+```{r}
+mtcars %>%
+  arrange(cyl, desc(mpg))
+```
+
+Esto hace lo siguiente:
+
+1.  Primero ordena por número de cilindros.
+2.  Dentro de cada grupo de cilindros, ordena de mayor a menor según `mpg`.
+
+------------------------------------------------------------------------
+
+## 8.3 Usar `arrange()` con una base de datos de R: `iris`
+
+La base `iris` contiene información sobre flores.
+
+```{r}
+data(iris)
+head(iris)
+```
+
+Algunas columnas son:
+
+-   `Sepal.Length`: longitud del sépalo.
+-   `Sepal.Width`: ancho del sépalo.
+-   `Petal.Length`: longitud del pétalo.
+-   `Petal.Width`: ancho del pétalo.
+-   `Species`: especie de la flor.
+
+Ordenemos la base según la longitud del pétalo.
+
+```{r}
+iris %>%
+  arrange(Petal.Length)
+```
+
+Ahora ordenemos de mayor a menor.
+
+```{r}
+iris %>%
+  arrange(desc(Petal.Length))
+```
+
+También podemos ordenar por especie y luego por longitud del pétalo.
+
+```{r}
+iris %>%
+  arrange(Species, desc(Petal.Length))
+```
+
+Esto permite ver, dentro de cada especie, cuáles flores tienen los pétalos más largos.
+
+------------------------------------------------------------------------
+
+# 9. Ejemplo completo
+
+Supongamos que queremos trabajar con la base `mtcars`.
+
+Queremos:
+
+1.  Seleccionar las columnas `mpg`, `cyl`, `hp` y `wt`.
+2.  Filtrar autos con más de 100 caballos de fuerza.
+3.  Crear una nueva columna llamada `hp_por_peso`.
+4.  Ordenar los resultados de mayor a menor según `hp_por_peso`.
+
+```{r}
+mtcars %>%
+  select(mpg, cyl, hp, wt) %>%
+  filter(hp > 100) %>%
+  mutate(hp_por_peso = hp / wt) %>%
+  arrange(desc(hp_por_peso))
+```
+
+Este ejemplo combina varias funciones de `dplyr`.
+
+El orden de trabajo fue:
+
+``` text
+Base de datos
+   ↓
+select()
+   ↓
+filter()
+   ↓
+mutate()
+   ↓
+arrange()
+```
+
+------------------------------------------------------------------------
+
+# 10. Ejercicios sobre `arrange()`
+
+En los siguientes ejercicios debes usar principalmente la función `arrange()`.
+
+------------------------------------------------------------------------
+
+## Ejercicio 1
+
+Usa la base de datos `mtcars`.
+
+Ordena los automóviles de menor a mayor según la variable `mpg`.
+
+```{r}
+mtcars %>%
+  arrange(mpg)
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 2
+
+Usa la base de datos `mtcars`.
+
+Ordena los automóviles de mayor a menor según la variable `mpg`.
+
+```{r}
+mtcars %>%
+  arrange(desc(mpg))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 3
+
+Usa la base de datos `mtcars`.
+
+Ordena los automóviles de mayor a menor según la variable `hp`.
+
+```{r}
+mtcars %>%
+  arrange(desc(hp))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 4
+
+Usa la base de datos `iris`.
+
+Ordena las flores de menor a mayor según `Sepal.Length`.
+
+```{r}
+iris %>%
+  arrange(Sepal.Length)
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 5
+
+Usa la base de datos `iris`.
+
+Ordena las flores de mayor a menor según `Petal.Length`.
+
+```{r}
+iris %>%
+  arrange(desc(Petal.Length))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 6
+
+Usa la base de datos `iris`.
+
+Ordena primero por `Species` y luego por `Petal.Length` de mayor a menor.
+
+```{r}
+iris %>%
+  arrange(Species, desc(Petal.Length))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 7
+
+Usa la base de datos `airquality`.
+
+Primero elimina los valores faltantes usando `na.omit()`.
+
+Luego ordena los datos de mayor a menor según la temperatura, variable `Temp`.
+
+```{r}
+airquality %>%
+  na.omit() %>%
+  arrange(desc(Temp))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 8
+
+Usa la base de datos `ToothGrowth`.
+
+Ordena los datos primero por el tipo de suplemento `supp` y luego por la longitud dental `len` de mayor a menor.
+
+```{r}
+
+ToothGrowth %>%
+  arrange(supp, desc(len))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 9
+
+Usa la base de datos `mtcars`.
+
+Haz lo siguiente:
+
+1.  Selecciona las columnas `mpg`, `cyl`, `hp` y `wt`.
+2.  Crea una nueva columna llamada `rendimiento_potencia` usando la fórmula:
+
+$$
+rendimiento\_potencia = \frac{mpg}{hp}
+$$
+
+3.  Ordena los automóviles de mayor a menor según `rendimiento_potencia`.
+
+```{r}
+mtcars %>%
+  select(mpg, cyl, hp, wt) %>%
+  mutate(rendimiento_potencia = mpg / hp) %>%
+  arrange(desc(rendimiento_potencia))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 10
+
+Usa la base de datos `mtcars`.
+
+Realiza lo siguiente:
+
+1.  Selecciona las variables `mpg`, `cyl`, `hp` y `wt`.
+
+2.  Filtra los automóviles que tengan más de 150 caballos de fuerza.
+
+3.  Crea una nueva variable llamada `eficiencia` definida como:
+
+    eficiencia = mpg / wt
+
+4.  Agrupa por número de cilindros (`cyl`).
+
+5.  Calcula el promedio de `eficiencia` por grupo.
+
+6.  Ordena los resultados de mayor a menor según el promedio de eficiencia.
+
+```{r}
+mtcars %>%
+  select(mpg, cyl, hp, wt) %>%
+  filter(hp > 150) %>%
+  mutate(eficiencia = mpg / wt) %>%
+  group_by(cyl) %>%
+  summarise(promedio_eficiencia = mean(eficiencia)) %>%
+  arrange(desc(promedio_eficiencia))
+
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 11
+
+Usa la base de datos `iris`.
+
+Realiza lo siguiente:
+
+1.  Selecciona todas las columnas numéricas.
+
+2.  Filtra las flores cuya longitud de pétalo (`Petal.Length`) sea mayor que 4.
+
+3.  Crea una nueva variable llamada `relacion_petalo_sepalo`:
+
+    relacion_petalo_sepalo = Petal.Length / Sepal.Length
+
+4.  Agrupa por especie (`Species`).
+
+5.  Calcula:
+
+    -   promedio de `relacion_petalo_sepalo`
+    -   máximo de `Petal.Width`
+
+6.  Ordena los resultados de mayor a menor según el promedio de la relación.
+
+```{r}
+iris %>%
+  select(where(is.numeric), Species) %>%
+  filter(Petal.Length > 4) %>%
+  mutate(relacion_petalo_sepalo = Petal.Length / Sepal.Length) %>%
+  group_by(Species) %>%
+  summarise(
+    promedio_relacion = mean(relacion_petalo_sepalo),
+    max_petal_width = max(Petal.Width)
+  ) %>%
+  arrange(desc(promedio_relacion))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 12
+
+Usa la base de datos `airquality`.
+
+Realiza lo siguiente:
+
+1.  Elimina los valores faltantes.
+
+2.  Selecciona las variables `Temp`, `Wind`, `Ozone` y `Month`.
+
+3.  Filtra los días donde la temperatura sea mayor a 80.
+
+4.  Crea una nueva variable llamada `indice_calidad`:
+
+    indice_calidad = Ozone / Wind
+
+5.  Agrupa por mes (`Month`).
+
+6.  Calcula:
+
+    -   promedio de `indice_calidad`
+    -   cantidad de observaciones
+
+7.  Ordena los resultados de menor a mayor según el promedio del índice.
+
+```{r}
+airquality %>%
+  na.omit() %>%
+  select(Temp, Wind, Ozone, Month) %>%
+  filter(Temp > 80) %>%
+  mutate(indice_calidad = Ozone / Wind) %>%
+  group_by(Month) %>%
+  summarise(
+    promedio_indice = mean(indice_calidad),
+    cantidad = n()
+  ) %>%
+  arrange(desc(promedio_indice))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 13
+
+Usa la base de datos `ToothGrowth`.
+
+Realiza lo siguiente:
+
+1.  Selecciona las variables `len`, `supp` y `dose`.
+
+2.  Filtra los datos donde la dosis (`dose`) sea mayor o igual a 1.
+
+3.  Crea una nueva variable llamada `log_len`:
+
+    log_len = log(len)
+
+4.  Agrupa por tipo de suplemento (`supp`) y dosis (`dose`).
+
+5.  Calcula:
+
+    -   promedio de `log_len`
+    -   desviación estándar de `len`
+
+6.  Ordena primero por tipo de suplemento y luego de mayor a menor por el promedio de `log_len`.
+
+```{r}
+ToothGrowth %>%
+  select(len, supp, dose) %>%
+  filter(dose >= 1) %>%
+  mutate(log_len = log(len)) %>%
+  group_by(supp, dose) %>%
+  summarise(
+    promedio_log_len = mean(log_len),
+    sd_len = sd(len),
+    .groups = "drop"
+  ) %>%
+  arrange(supp, desc(promedio_log_len))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 14
+
+Usa la base de datos `mtcars`.
+
+Este ejercicio requiere más análisis:
+
+1.  Selecciona las variables `mpg`, `cyl`, `hp`, `wt` y `gear`.
+
+2.  Filtra los automóviles con:
+
+    -   más de 4 cilindros
+    -   y peso menor a 4
+
+3.  Crea dos nuevas variables:
+
+    potencia_relativa = hp / wt\
+    consumo_inverso = 1 / mpg
+
+4.  Agrupa por número de marchas (`gear`) y cilindros (`cyl`).
+
+5.  Calcula:
+
+    -   promedio de `potencia_relativa`
+    -   promedio de `consumo_inverso`
+    -   número de observaciones
+
+6.  Ordena los resultados:
+
+    -   primero de mayor a menor según `potencia_relativa`
+    -   y en caso de empate, de menor a mayor según `consumo_inverso`
+
+```{r}
+mtcars %>%
+  select(mpg, cyl, hp, wt, gear) %>%
+  filter(cyl > 4, wt < 4) %>%
+  mutate(
+    potencia_relativa = hp / wt,
+    consumo_inverso = 1 / mpg
+  ) %>%
+  group_by(gear, cyl) %>%
+  summarise(
+    promedio_potencia = mean(potencia_relativa),
+    promedio_consumo_inv = mean(consumo_inverso),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(promedio_potencia), promedio_consumo_inv)
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 15
+
+Usa la base de datos `iris`.
+
+Realiza lo siguiente:
+
+1.  Selecciona las variables `Sepal.Length`, `Sepal.Width`, `Petal.Length`, `Petal.Width` y `Species`.
+
+2.  Filtra las flores que tengan:
+
+    -   longitud del pétalo mayor que 3
+    -   y ancho del sépalo mayor que 2.5
+
+3.  Crea dos nuevas variables:
+
+    relacion_petalo = Petal.Length / Petal.Width\
+    relacion_sepalo = Sepal.Length / Sepal.Width
+
+4.  Agrupa por especie (`Species`).
+
+5.  Calcula:
+
+    -   promedio de `relacion_petalo`
+    -   promedio de `relacion_sepalo`
+    -   cantidad de observaciones
+
+6.  Ordena los resultados de mayor a menor según el promedio de `relacion_petalo`.
+
+```{r}
+iris %>%
+  select(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species) %>%
+  filter(Petal.Length > 3, Sepal.Width > 2.5) %>%
+  mutate(
+    relacion_petalo = Petal.Length / Petal.Width,
+    relacion_sepalo = Sepal.Length / Sepal.Width
+  ) %>%
+  group_by(Species) %>%
+  summarise(
+    promedio_rel_petalo = mean(relacion_petalo),
+    promedio_rel_sepalo = mean(relacion_sepalo),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(promedio_rel_petalo))
+```
+
+------------------------------------------------------------------------
+
+# 11. Comentario final
+
+La función `arrange()` es muy útil porque permite ordenar datos de forma sencilla.
+
+Podemos ordenar:
+
+-   De menor a mayor.
+-   De mayor a menor usando `desc()`.
+-   Por una sola columna.
+-   Por varias columnas.
+-   Después de filtrar, seleccionar o crear nuevas variables.
+
+Por eso `arrange()` es una función muy importante para explorar y analizar bases de datos en R.
