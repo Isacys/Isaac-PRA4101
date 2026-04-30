@@ -18,7 +18,7 @@ e2 <- filter(e2, Petal.Length > 4)
 e2 <- arrange(e2, desc(Petal.Length))
 
 
-#Sobreescribiendo la función 
+#Sobreescribiendo el objeto
 e2 <- iris
 e2 <- select(e2, Sepal.Length, Petal.Length, Species)
 e2 <- filter(e2, Petal.Length > 4)
@@ -64,7 +64,7 @@ mtcars %>%
   filter(cyl == 6) %>%
   arrange(desc(hp))
 
-#Sobreescribiendo la función
+#Sobreescribiendo el objeto 
 
 e5 <- mtcars
 e5 <- select(e5, mpg, cyl, hp, wt)
@@ -114,7 +114,67 @@ $$
 
 ```{r}
 
+#Pasos Intermedios 
+
+e8 <- airquality
+e8 <- na.omit(e8)
+e8 <- select(e8, Ozone, Wind, Temp, Month)
+e8 <- filter(e8, Temp > 80)
+e8 <- mutate(e8, indice_ozono = Ozone / Wind)
+e8 <- group_by(e8, Month)
+e8 <- summarise(
+  e8,
+  promedio_indice = mean(indice_ozono),
+  temp_promedio = mean(Temp),
+  n = n()
+)
+e8 <- arrange(e8, desc(promedio_indice))
+
+e8
+
+#Sobreescribiendo el objeto
+
+e8 <- airquality
+e8 <- na.omit(e8)
+e8 <- select(e8, Ozone, Wind, Temp, Month)
+e8 <- filter(e8, Temp > 80)
+e8 <- mutate(e8, indice_ozono = Ozone / Wind)
+e8 <- group_by(e8, Month)
+e8 <- summarise(
+  e8,
+  promedio_indice = mean(indice_ozono),
+  temp_promedio = mean(Temp),
+  n = n(),
+  .groups = "drop"
+)
+e8 <- arrange(e8, desc(promedio_indice))
+
+#Composicion de funciones
+
+e8 <- arrange(
+        summarise(
+          group_by(
+            mutate(
+              filter(
+                select(
+                  na.omit(airquality),
+                  Ozone, Wind, Temp, Month
+                ),
+                Temp > 80
+              ),
+              indice_ozono = Ozone / Wind
+            ),
+            Month
+          ),
+          promedio_indice = mean(indice_ozono),
+          temp_promedio = mean(Temp),
+          n = n()
+        ),
+        desc(promedio_indice)
+      )
+
 #Tuberias
+
 airquality %>%
   na.omit() %>%
   select(Ozone, Wind, Temp, Month) %>%
