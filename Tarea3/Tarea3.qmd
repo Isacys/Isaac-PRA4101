@@ -4,7 +4,7 @@ Usa la base de datos `iris`.
 
 Realiza lo siguiente usando **pasos intermedios**:
 
-1.  Selecciona las columnas `Sepal.Length`, `Petal.Length` y `Species`.
+1.  Selecciona las columnas Sepal.Length, Petal.Length y Species.
 2.  Filtra las flores con `Petal.Length > 4`.
 3.  Ordena los resultados de mayor a menor según `Petal.Length`.
 
