@@ -1,3 +1,16 @@
+---
+title: 'Unidad 5: Manipulación de datos en R con dplyr'
+author: "Isaac Alexander Morales Arevalo"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+  html_document:
+    toc: true
+    toc_depth: 3
+    theme: flatly
+---
+
 ## Ejercicio 2
 
 Usa la base de datos `iris`.
@@ -9,7 +22,7 @@ Realiza lo siguiente usando **pasos intermedios**:
 3.  Ordena los resultados de mayor a menor según `Petal.Length`.
 
 
-##Pasos Intermedios
+## Pasos Intermedios
 
 ``` {r}
 e2 <- iris
@@ -18,7 +31,7 @@ e2 <- filter(e2, Petal.Length > 4)
 e2 <- arrange(e2, desc(Petal.Length))
 ```
 
-##Sobreescribiendo el objeto
+## Sobreescribiendo el objeto
 
 ``` {r}
 e2 <- iris
@@ -27,7 +40,8 @@ e2 <- filter(e2, Petal.Length > 4)
 e2 <- arrange(e2, desc(Petal.Length))
 ```
 
-##Composicion de funciones
+
+## Composicion de funciones
 ``` {r}
 e2 <- arrange(
         filter(
@@ -38,7 +52,7 @@ e2 <- arrange(
       )
 ``` 
 
-##Tuberias
+## Tuberias
 
 ``` {r}
 library(dplyr)
@@ -62,7 +76,7 @@ Realiza lo siguiente usando **tuberías**:
 
 
 
-##Pasos Intermedios
+## Pasos Intermedios
 ``` {r}
 mtcars %>%
   select(mpg, cyl, hp, wt) %>%
@@ -70,7 +84,7 @@ mtcars %>%
   arrange(desc(hp))
 ``` 
 
-##Sobreescribiendo el objeto 
+## Sobreescribiendo el objeto 
 
 ``` {r}
 e5 <- mtcars
@@ -79,7 +93,7 @@ e5 <- filter(e5, cyl == 6)
 e5 <- arrange(e5, desc(hp))
 ```
 
-##Composicion de funciones
+## Composicion de funciones
 ``` {r}
 e5 <- mtcars
 e5 <- select(e5, mpg, cyl, hp, wt)
@@ -87,7 +101,7 @@ e5 <- filter(e5, cyl == 6)
 e5 <- arrange(e5, desc(hp))
 ```
 
-##Tuberias
+## Tuberias
 ``` {r}
 library(dplyr)
 
@@ -121,7 +135,7 @@ $$
 7.  Ordena los resultados de mayor a menor según el promedio del índice de ozono.
 
 
-##Pasos Intermedios 
+## Pasos Intermedios 
 
 ``` {r}
 e8 <- airquality
@@ -140,7 +154,7 @@ e8 <- arrange(e8, desc(promedio_indice))
 
 e8
 ```
-##Sobreescribiendo el objeto
+## Sobreescribiendo el objeto
 
 ``` {r}
 e8 <- airquality
@@ -159,7 +173,7 @@ e8 <- summarise(
 e8 <- arrange(e8, desc(promedio_indice))
 ```
 
-##Composicion de funciones
+## Composicion de funciones
 ``` {r}
 e8 <- arrange(
         summarise(
@@ -184,7 +198,7 @@ e8 <- arrange(
       )
 ```
 
-##Tuberias
+## Tuberias
 
 ``` {r}
 airquality %>%
