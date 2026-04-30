@@ -1,4 +1,4 @@
-# Ejercicio 2
+## Ejercicio 2
 
 Usa la base de datos `iris`.
 
@@ -113,45 +113,8 @@ $$
 7.  Ordena los resultados de mayor a menor según el promedio del índice de ozono.
 
 ```{r}
-airquality %>%
-  na.omit() %>%
-  select(Ozone, Wind, Temp, Month) %>%
-  filter(Temp > 80) %>%
-  mutate(indice_ozono = Ozone / Wind) %>%
-  group_by(Month) %>%
-  summarise(
-    promedio_indice = mean(indice_ozono),
-    temp_promedio = mean(Temp),
-    n = n(),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(promedio_indice))
-```
 
-------------------------------------------------------------------------
-## Ejercicio 8
-
-Usa la base de datos `airquality`.
-
-Realiza lo siguiente usando tuberías:
-
-1.  Elimina los valores faltantes.
-2.  Selecciona las columnas `Ozone`, `Wind`, `Temp` y `Month`.
-3.  Filtra los días donde `Temp > 80`.
-4.  Crea una variable llamada `indice_ozono`:
-
-$$
-indice\_ozono = \frac{Ozone}{Wind}
-$$
-
-5.  Agrupa por `Month`.
-6.  Calcula:
-    -   promedio de `indice_ozono`
-    -   temperatura promedio
-    -   cantidad de observaciones
-7.  Ordena los resultados de mayor a menor según el promedio del índice de ozono.
-
-```{r}
+#Tuberias
 airquality %>%
   na.omit() %>%
   select(Ozone, Wind, Temp, Month) %>%
