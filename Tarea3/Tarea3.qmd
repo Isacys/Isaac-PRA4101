@@ -8,24 +8,27 @@ Realiza lo siguiente usando **pasos intermedios**:
 2.  Filtra las flores con `Petal.Length > 4`.
 3.  Ordena los resultados de mayor a menor según `Petal.Length`.
 
-```{r}
 
-#Pasos Intermedios
+##Pasos Intermedios
 
+``` {r}
 e2 <- iris
 e2 <- select(e2, Sepal.Length, Petal.Length, Species)
 e2 <- filter(e2, Petal.Length > 4)
 e2 <- arrange(e2, desc(Petal.Length))
+```
 
+##Sobreescribiendo el objeto
 
-#Sobreescribiendo el objeto
+``` {r}
 e2 <- iris
 e2 <- select(e2, Sepal.Length, Petal.Length, Species)
 e2 <- filter(e2, Petal.Length > 4)
 e2 <- arrange(e2, desc(Petal.Length))
+```
 
-#Composicion de funciones
-
+##Composicion de funciones
+``` {r}
 e2 <- arrange(
         filter(
           select(iris, Sepal.Length, Petal.Length, Species),
@@ -33,10 +36,12 @@ e2 <- arrange(
         ),
         desc(Petal.Length)
       )
+``` 
 
-#Tuberias
+##Tuberias
 
-#library(dplyr)
+``` {r}
+library(dplyr)
 
 e2 <- iris %>%
   select(Sepal.Length, Petal.Length, Species) %>%
@@ -55,38 +60,41 @@ Realiza lo siguiente usando **tuberías**:
 2.  Filtra los automóviles con `cyl == 6`.
 3.  Ordena los resultados de mayor a menor según `hp`.
 
-```{r}
 
-#Pasos Intermedios
 
+##Pasos Intermedios
+``` {r}
 mtcars %>%
   select(mpg, cyl, hp, wt) %>%
   filter(cyl == 6) %>%
   arrange(desc(hp))
+``` 
 
-#Sobreescribiendo el objeto 
+##Sobreescribiendo el objeto 
 
+``` {r}
 e5 <- mtcars
 e5 <- select(e5, mpg, cyl, hp, wt)
 e5 <- filter(e5, cyl == 6)
 e5 <- arrange(e5, desc(hp))
+```
 
-#Composicion de funciones
-
+##Composicion de funciones
+``` {r}
 e5 <- mtcars
 e5 <- select(e5, mpg, cyl, hp, wt)
 e5 <- filter(e5, cyl == 6)
 e5 <- arrange(e5, desc(hp))
+```
 
-#Tuberias
-
+##Tuberias
+``` {r}
 library(dplyr)
 
 e5 <- mtcars %>%
   select(mpg, cyl, hp, wt) %>%
   filter(cyl == 6) %>%
   arrange(desc(hp))
-
 ```
 
 ------------------------------------------------------------------------
@@ -112,10 +120,10 @@ $$
     -   cantidad de observaciones
 7.  Ordena los resultados de mayor a menor según el promedio del índice de ozono.
 
-```{r}
 
-#Pasos Intermedios 
+##Pasos Intermedios 
 
+``` {r}
 e8 <- airquality
 e8 <- na.omit(e8)
 e8 <- select(e8, Ozone, Wind, Temp, Month)
@@ -131,9 +139,10 @@ e8 <- summarise(
 e8 <- arrange(e8, desc(promedio_indice))
 
 e8
+```
+##Sobreescribiendo el objeto
 
-#Sobreescribiendo el objeto
-
+``` {r}
 e8 <- airquality
 e8 <- na.omit(e8)
 e8 <- select(e8, Ozone, Wind, Temp, Month)
@@ -148,9 +157,10 @@ e8 <- summarise(
   .groups = "drop"
 )
 e8 <- arrange(e8, desc(promedio_indice))
+```
 
-#Composicion de funciones
-
+##Composicion de funciones
+``` {r}
 e8 <- arrange(
         summarise(
           group_by(
@@ -172,9 +182,11 @@ e8 <- arrange(
         ),
         desc(promedio_indice)
       )
+```
 
-#Tuberias
+##Tuberias
 
+``` {r}
 airquality %>%
   na.omit() %>%
   select(Ozone, Wind, Temp, Month) %>%
