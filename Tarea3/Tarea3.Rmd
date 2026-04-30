@@ -11,6 +11,10 @@ output:
     theme: flatly
 ---
 
+``` {r}
+library(dplyr)
+```
+
 ## Ejercicio 2
 
 Usa la base de datos `iris`.
