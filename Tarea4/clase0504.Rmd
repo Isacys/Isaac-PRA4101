@@ -1,0 +1,233 @@
+---
+title: 'Unidad II: Tuberías con el paquete magrittr'
+author: "Isaac Alexander Morales Arevalo"
+output:
+  pdf_document
+---
+
+# 3 Ejercicios.
+
+En esta guía practicaremos las tres variantes vistas en clase:
+
+-   `%T>%`
+-   `%$%`
+-   `%<>%`
+
+Carga los paquetes necesarios antes de iniciar:
+
+```{r, eval=FALSE}
+library(magrittr)
+library(dplyr)
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 1.
+
+Crea el siguiente data frame:
+
+```{r, eval=FALSE}
+temperaturas <- data.frame(
+  dia = c("Lunes", "Martes", "Miércoles", "Jueves", "Viernes"),
+  minima = c(18, 19, 17, 20, 21),
+  maxima = c(28, 30, 27, 31, 32)
+)
+```
+
+Crea una nueva columna llamada `promedio`, definida como el promedio entre `minima` y `maxima`.
+
+El resultado debe quedar guardado nuevamente en el objeto `temperaturas`.
+
+```{r}
+library(dplyr)
+
+temperaturas <- data.frame(
+  dia = c("Lunes", "Martes", "Miércoles", "Jueves", "Viernes"),
+  minima = c(18, 19, 17, 20, 21),
+  maxima = c(28, 30, 27, 31, 32)
+)
+
+temperaturas <- temperaturas %>%
+  mutate(promedio = (minima + maxima)/2)
+```
+
+## Ejercicio 2.
+
+Crea el siguiente data frame:
+
+```{r, eval=FALSE}
+ventas <- data.frame(
+  producto = c("Pan", "Leche", "Huevos", "Café", "Arroz"),
+  precio = c(0.25, 1.10, 2.50, 4.75, 1.20),
+  cantidad = c(20, 12, 8, 5, 15)
+)
+```
+
+Crea una columna llamada `ingreso_total`, definida como `precio * cantidad`.
+
+Luego ordena los productos de mayor a menor ingreso.
+
+El resultado debe quedar guardado nuevamente en el objeto `ventas`.
+
+```{r}
+ventas <- data.frame(
+  producto = c("Pan", "Leche", "Huevos", "Café", "Arroz"),
+  precio = c(0.25, 1.10, 2.50, 4.75, 1.20),
+  cantidad = c(20, 12, 8, 5, 15)
+)
+
+ventas <- ventas %>%
+  mutate(ingreso_total = precio * cantidad) %>%
+  arrange(desc(ingreso_total))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 3.
+
+Usa la base de datos `mtcars`.
+
+Calcula la correlación entre `wt` y `mpg` escribiendo directamente los nombres de las columnas.
+
+```{r}
+library(magrittr)
+mtcars %$%
+  cor(wt, mpg)
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 4.
+
+Usa la base de datos `iris`.
+
+Calcula el promedio de `Petal.Length` escribiendo directamente el nombre de la columna.
+
+```{r}
+iris %$%
+  mean(Petal.Length)
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 5.
+
+Genera 80 números aleatorios con distribución normal.
+
+Convierte esos números en una matriz con 2 columnas.
+
+Haz una gráfica de la matriz y luego muestra su estructura.
+
+La gráfica no debe interrumpir la secuencia de operaciones.
+
+```{r}
+set.seed(123)
+
+rnorm(80) %T>%
+  matrix(ncol = 2) %T>%
+  plot() %>%
+  str()
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 6.
+
+Usa la base de datos `mtcars`.
+
+Haz lo siguiente:
+
+1.  Conserva las columnas `mpg`, `hp`, `wt` y `cyl`.
+2.  Conserva solamente los automóviles con `hp > 120`.
+3.  Imprime las primeras filas del resultado intermedio.
+4.  Crea una columna llamada `rendimiento`, definida como `mpg / hp`.
+5.  Ordena el resultado de mayor a menor según `rendimiento`.
+
+```{r}
+mtcars %>%
+  select(mpg, hp, wt, cyl) %>%
+  filter(hp > 120) %>%
+  head() %>%
+  mutate(rendimiento = mpg / hp) %>%
+  arrange(desc(rendimiento))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 7.
+
+Crea el siguiente data frame:
+
+```{r, eval=FALSE}
+estudiantes <- data.frame(
+  nombre = c("Ana", "Luis", "Marta", "Carlos", "Sofía", "Pedro"),
+  matematicas = c(8.5, 6.2, 9.1, 5.8, 7.4, 6.9),
+  programacion = c(9.0, 7.1, 8.8, 6.3, 8.2, 7.5)
+)
+```
+
+Haz lo siguiente:
+
+1.  Crea una columna llamada `promedio`, definida como el promedio entre `matematicas` y `programacion`.
+2.  Imprime una vista rápida del resultado.
+3.  Conserva solamente estudiantes con promedio mayor o igual que `7`.
+4.  Ordena los resultados de mayor a menor promedio.
+5.  Guarda el resultado nuevamente en el objeto `estudiantes`.
+
+```{r}
+estudiantes <- data.frame(
+  nombre = c("Ana", "Luis", "Marta", "Carlos", "Sofía", "Pedro"),
+  matematicas = c(8.5, 6.2, 9.1, 5.8, 7.4, 6.9),
+  programacion = c(9.0, 7.1, 8.8, 6.3, 8.2, 7.5)
+)
+
+estudiantes <- estudiantes %>%
+  mutate(promedio = (matematicas + programacion)/2) %>%
+  glimpse() %>%
+  filter(promedio >= 7) %>%
+  arrange(desc(promedio))
+
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 8.
+
+Crea el siguiente data frame:
+
+```{r, eval=FALSE}
+ventas_categoria <- data.frame(
+  producto = c("Laptop", "Mouse", "Teclado", "Monitor", "Silla", "Escritorio", "Audífonos", "Webcam"),
+  categoria = c("Tecnología", "Tecnología", "Tecnología", "Tecnología", "Oficina", "Oficina", "Tecnología", "Tecnología"),
+  precio = c(800, 15, 25, 200, 120, 250, 45, 60),
+  cantidad = c(3, 20, 15, 5, 8, 4, 12, 10)
+)
+```
+
+Haz lo siguiente:
+
+1.  Crea una columna llamada `ingreso_total`, definida como `precio * cantidad`.
+2.  Imprime las primeras filas después de crear `ingreso_total`.
+3.  Calcula el ingreso total por categoría.
+4.  Calcula la cantidad total de productos vendidos por categoría.
+5.  Ordena el resultado de mayor a menor ingreso total.
+6.  Guarda el resultado nuevamente en el objeto `ventas_categoria`.
+
+```{r}
+ventas_categoria <- data.frame(
+  producto = c("Laptop", "Mouse", "Teclado", "Monitor", "Silla", "Escritorio", "Audífonos", "Webcam"),
+  categoria = c("Tecnología", "Tecnología", "Tecnología", "Tecnología", "Oficina", "Oficina", "Tecnología", "Tecnología"),
+  precio = c(800, 15, 25, 200, 120, 250, 45, 60),
+  cantidad = c(3, 20, 15, 5, 8, 4, 12, 10)
+)
+
+ventas_categoria <- ventas_categoria %>%
+  mutate(ingreso_total = precio * cantidad) %>%
+  head() %>%
+  group_by(categoria) %>%
+  summarise(
+    ingreso_total = sum(ingreso_total),
+    cantidad_total = sum(cantidad)
+  ) %>%
+  arrange(desc(ingreso_total))
+```
