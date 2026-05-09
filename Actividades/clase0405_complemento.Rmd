@@ -1,0 +1,209 @@
+---
+title: 'Complemento de la clase 0405'
+author: "Isaac Alexander Morales Arevalo"
+output:
+  pdf_document
+---
+
+## Ejercicios
+
+Cargar librerias
+
+```{r}
+library(dplyr)
+library(magrittr)
+```
+
+# Ejercicio 1
+
+El siguiente código usa una tubería larga. Reescríbelo usando objetos intermedios con nombres significativos.
+
+```{r eval=FALSE}
+mtcars %>%
+  select(mpg, cyl, hp, wt) %>%
+  filter(hp > 100) %>%
+  mutate(rendimiento = mpg / hp) %>%
+  group_by(cyl) %>%
+  summarise(promedio = mean(rendimiento)) %>%
+  arrange(desc(promedio))
+```
+
+```{r}
+#Seleccionar variables relevantes
+datos_seleccionados <- mtcars %>%
+  select(mpg, cyl, hp, wt)
+
+#Filtrar autos con hp > 100
+datos_filtrados <- datos_seleccionados %>%
+  filter(hp > 100)
+
+#Crear variable rendimiento
+datos_con_rendimiento <- datos_filtrados %>%
+  mutate(rendimiento = mpg / hp)
+
+#Agrupar por cilindros
+datos_agrupados <- datos_con_rendimiento %>%
+  group_by(cyl)
+
+#Calcular promedio
+resumen <- datos_agrupados %>%
+  summarise(promedio = mean(rendimiento))
+
+#Ordenar de mayor a menor
+resultado_final <- resumen %>%
+  arrange(desc(promedio))
+```
+
+------------------------------------------------------------------------
+
+# Ejercicio 2
+
+Explica por qué la siguiente tubería puede ser difícil de depurar.
+
+```{r, eval=FALSE}
+mtcars %>%
+  select(mpg, cyl, hp) %>%
+  filter(potencia > 100) %>%
+  arrange(desc(mpg))
+```
+
+Hay un problema con la variable (potencia) ya que esta no existe y al estar encadenado en todo el problema es dificil de visualizarlo.
+
+------------------------------------------------------------------------
+
+## Ejercicio 3
+
+Corrige el siguiente código y reescríbelo de forma que sea más fácil revisar cada paso.
+
+```{r, eval=FALSE}
+mtcars %>%
+  select(mpg, cyl, hp) %>%
+  mutate(relacion = millas / hp) %>%
+  arrange(desc(relacion))
+```
+
+```{r}
+#Seleccionar variables
+datos_seleccionados <- mtcars %>%
+  select(mpg, cyl, hp)
+
+#Crear nueva variable
+datos_con_relacion <- datos_seleccionados %>%
+  mutate(relacion = mpg / hp)
+
+#Ordenar resultados
+resultado_final <- datos_con_relacion %>%
+  arrange(desc(relacion))
+```
+
+------------------------------------------------------------------------
+
+## Ejercicio 4
+
+Decide si conviene o no usar tuberías en el siguiente caso. Justifica tu respuesta.
+
+Queremos:
+
+1.  Tomar `iris`.
+2.  Seleccionar `Sepal.Length`, `Sepal.Width` y `Species`.
+3.  Filtrar las flores de la especie `setosa`.
+4.  Ordenar de mayor a menor según `Sepal.Length`.
+
+```{r}
+
+iris %>%
+  select(Sepal.Length, Sepal.Width, Species) %>%
+  filter(Species == "setosa") %>%
+  arrange(desc(Sepal.Length))
+
+```
+
+Es conveniente usar tuberias ya que los pasos son lineales y van uno despues de otro.
+
+------------------------------------------------------------------------
+
+# Ejercicio 5
+
+Decide si conviene o no usar una sola tubería para este análisis.
+
+Queremos:
+
+1.  Crear un grupo de autos con `hp > 150`.
+2.  Crear otro grupo de autos con `mpg > 25`.
+3.  Calcular un resumen para cada grupo.
+4.  Comparar los resultados.
+
+```{r}
+
+# Grupo 1: hp > 150
+autos_hp <- mtcars %>%
+  filter(hp > 150) %>%
+  summarise(promedio_mpg = mean(mpg))
+
+# Grupo 2: mpg > 25
+autos_mpg <- mtcars %>%
+  filter(mpg > 25) %>%
+  summarise(promedio_hp = mean(hp))
+
+#Luego comparamos:
+
+autos_hp
+autos_mpg
+```
+
+La respuesta es no, ya que se hacen dos analisis distintos y la linealidad se pierde al no ser un proceso unico, por lo que la mejor opcion es hacerlo por objetos intermedios.
+
+------------------------------------------------------------------------
+
+# Ejercicio 6
+
+El siguiente código tiene muchas operaciones. Reescríbelo usando objetos intermedios.
+
+```{r}
+iris %>%
+  select(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species) %>%
+  filter(Sepal.Length > 5) %>%
+  mutate(
+    razon_sepalo = Sepal.Length / Sepal.Width,
+    razon_petalo = Petal.Length / Petal.Width
+  ) %>%
+  group_by(Species) %>%
+  summarise(
+    promedio_sepalo = mean(razon_sepalo),
+    promedio_petalo = mean(razon_petalo)
+  ) %>%
+  arrange(desc(promedio_petalo))
+```
+
+```{r}
+
+# Seleccionar variables relevantes
+datos_seleccionados <- iris %>%
+  select(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species)
+
+# Filtrar datos
+datos_filtrados <- datos_seleccionados %>%
+  filter(Sepal.Length > 5)
+
+# crear nuevas variables
+datos_transformados <- datos_filtrados %>%
+  mutate(
+    razon_sepalo = Sepal.Length / Sepal.Width,
+    razon_petalo = Petal.Length / Petal.Width
+  )
+
+# Agrupar por especie
+datos_agrupados <- datos_transformados %>%
+  group_by(Species)
+
+# Calcular promedios
+resumen <- datos_agrupados %>%
+  summarise(
+    promedio_sepalo = mean(razon_sepalo),
+    promedio_petalo = mean(razon_petalo)
+  )
+
+# Ordenar resultados
+resultado_final <- resumen %>%
+  arrange(desc(promedio_petalo))
+```
