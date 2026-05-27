@@ -1,0 +1,218 @@
+---
+title: 'Unidad III: Variantes de los bucles `for` y funciones de orden superior'
+author: "Isaac Alexander Morales Arévalo"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(purrr)
+library(tibble)
+```
+
+
+# 3. Ejercicios con soluciones
+
+## Ejercicio 1
+
+Usa la base de datos `mtcars`. Calcula, con un bucle `for`, la media de cada columna. Guarda los resultados en un vector numérico con nombres.
+
+
+```{r}
+medias <- numeric(ncol(mtcars))
+names(medias) <- names(mtcars)
+
+for(i in 1:ncol(mtcars)) {
+  medias[i] <- mean(mtcars[[i]])
+}
+
+medias
+
+```
+
+## Ejercicio 2
+
+Usa la base de datos `iris`. Con un bucle `for`, determina qué columnas son numéricas. Guarda el resultado en un vector lógico con nombres.
+
+```{r}
+es_numerica <- logical(ncol(iris))
+names(es_numerica) <- names(iris)
+
+for(i in 1:ncol(iris)) {
+  es_numerica[i] <- is.numeric(iris[[i]])
+}
+
+es_numerica
+
+```
+
+
+## Ejercicio 3
+
+Usa la base de datos `iris`. Con un bucle `for`, calcula la desviación estándar únicamente de las columnas numéricas.
+
+```{r}
+desviaciones <- c()
+
+for(i in 1:ncol(iris)){
+  if(is.numeric(iris[[i]])){
+    desviaciones[names(iris)[i]] <- sd(iris[[i]])
+  }
+}
+desviaciones
+```
+
+
+## Ejercicio 4
+
+Crea una función llamada `resumen_columnas()` que reciba un data frame y una función. La función debe aplicar la función dada a cada columna del data frame.
+
+Prueba tu función con `mean`, `median` y `sd` usando `mtcars`.
+
+```{r}
+resumen_columnas <- function(df, funcion) {
+  
+  resultados <- vector(mode = "list", length = ncol(df))
+  names(resultados) <- names(df)
+  
+  for(i in 1:ncol(df)) {
+    resultados[[i]] <- funcion(df[[i]])
+  }
+  
+  return(resultados)
+}
+
+# Pruebas con mtcars
+
+resumen_columnas(mtcars, mean)
+
+resumen_columnas(mtcars, median)
+
+resumen_columnas(mtcars, sd)
+  
+  
+
+```
+
+
+## Ejercicio 5
+
+Adapta la función anterior para que trabaje únicamente con columnas numéricas. Pruébala con `iris`.
+
+```{r}
+resumen_numericas <- function(df, funcion) {
+  
+  resultados <- list()
+  
+  for(i in 1:ncol(df)) {
+    
+    if(is.numeric(df[[i]])) {
+      resultados[[names(df)[i]]] <- funcion(df[[i]])
+    }
+    
+  }
+  
+  return(resultados)
+}
+
+# Prueba con iris
+
+resumen_numericas(iris, mean)
+
+resumen_numericas(iris, median)
+
+resumen_numericas(iris, sd)
+
+```
+
+
+## Ejercicio 6
+
+Genera 10 números aleatorios normales para cada una de las siguientes medias: `-10`, `0`, `10` y `100`. Usa un bucle `for` y guarda los resultados en una lista.
+
+```{r}
+
+medias <- c(-10, 0, 10, 100)
+
+resultados <- list()
+
+for(i in 1:length(medias)) {
+  
+  resultados[[paste("media:", medias[i])]] <- rnorm(10, mean = medias[i])
+  
+}
+
+resultados
+```
+
+
+## Ejercicio 7
+
+Reescribe el ejercicio anterior usando `map()`.
+
+```{r}
+
+```
+
+
+## Ejercicio 8
+
+Usa `map_dbl()` para calcular la media de cada columna de `mtcars`.
+
+```{r}
+library(purrr)
+
+medias_mtcars <- map_dbl(mtcars, mean)
+
+medias_mtcars
+```
+
+
+## Ejercicio 9
+
+Usa `map_chr()` para obtener la clase de cada columna de `iris`.
+
+```{r}
+clases_iris <- map_chr(iris, class)
+
+clases_iris
+```
+
+
+## Ejercicio 10
+
+Usa un bucle `while` para simular lanzamientos de una moneda hasta obtener dos caras seguidas. El resultado final debe ser el número de lanzamientos necesarios.
+
+```{r}
+set.seed(123)
+
+lanzamientos <- 0
+caras_seguidas <- 0
+
+while(caras_seguidas < 2) {
+  
+  moneda <- sample(c("cara", "cruz"), size = 1)
+  
+  lanzamientos <- lanzamientos + 1
+  
+  cat("Lanzamiento", lanzamientos, ":", moneda, "\n")
+  
+  if(moneda == "cara") {
+    caras_seguidas <- caras_seguidas + 1
+  } else {
+    caras_seguidas <- 0
+  }
+  
+}
+
+cat("\nSe necesitaron", lanzamientos,
+    "lanzamientos para obtener dos caras seguidas.\n")
+```
+
