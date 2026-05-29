@@ -1,0 +1,149 @@
+---
+title: 'Unidad III: Funciones map y manejo de errores en iteraciones'
+author: "Isaac Alexander Morales Arévalo"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+library(purrr)
+library(dplyr)
+library(tibble)
+```
+
+
+# 3. Ejercicios 
+
+## Ejercicio 1
+
+Usa `map_dbl()` para calcular la media de cada columna de `mtcars`.
+
+```{r}
+library(purrr)
+map_dbl(mtcars,mean)
+```
+
+
+
+
+## Ejercicio 2
+
+Usa `map_dbl()` para calcular la desviación estándar de cada columna de `mtcars`.
+
+```{r}
+library(purrr)
+map_dbl(mtcars,sd)
+```
+
+
+## Ejercicio 3
+
+Usa `map_chr()` para obtener la clase de cada columna de `iris`.
+
+```{r}
+
+map_chr(iris, class)
+```
+
+
+
+## Ejercicio 4
+
+Usa `map_lgl()` para determinar qué columnas de `iris` son numéricas.
+
+```{r}
+map_lgl(iris, is.numeric)
+```
+
+
+
+## Ejercicio 5
+
+Usa `map_int()` para calcular el número de valores únicos en cada columna de `iris`.
+
+```{r}
+library(purrr)
+map_int(iris, ~ length(unique(.x)))
+```
+
+
+
+## Ejercicio 6
+
+Usa `map_dbl()` para calcular el rango de cada columna de `mtcars`, definido como:
+
+\[
+\max(x) - \min(x).
+\]
+
+```{r}
+map_dbl(mtcars, function(x) {
+  max(x) - min(x)
+})
+```
+
+
+
+## Ejercicio 7
+
+Crea una lista con los valores `1`, `10`, `"a"` y `100`. Usa `safely()` para aplicar `log()` sin que el proceso se detenga.
+
+```{r}
+
+x <- list(1, 10, "a", 100)
+
+log_seguro <- safely(log)
+
+resultado <- map(x, log_seguro)
+
+resultado
+```
+
+
+
+
+## Ejercicio 8
+
+Usa el resultado del ejercicio anterior para identificar cuáles elementos produjeron error.
+
+```{r}
+map_lgl(resultado, ~ !is.null(.x$error))
+```
+
+
+
+## Ejercicio 9
+
+Usa `possibly()` para aplicar `log()` a la lista `x <- list(1, 10, "a", 100)`. Cuando ocurra un error, debe devolver `NA`.
+
+```{r}
+log_posible <- possibly(log, otherwise = NA)
+
+map(x, log_posible)
+```
+
+
+
+
+## Ejercicio 10
+
+Usa `quietly()` para aplicar `log()` a los valores `1`, `-1`, `10` y `-5`. Luego extrae las advertencias generadas.
+
+```{r}
+valores <- list(1, -1, 10, -5)
+
+log_silencioso <- quietly(log)
+
+resultado_quiet <- map(valores, log_silencioso)
+
+resultado_quiet
+```
+
+
+
