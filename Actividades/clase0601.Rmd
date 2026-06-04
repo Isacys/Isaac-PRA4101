@@ -1,0 +1,243 @@
+---
+title: 'Unidad III: Mapeo sobre múltiples argumentos y otros patrones de iteración'
+author: "Isaac Alexander Morales Arévalo"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+library(purrr)
+library(dplyr)
+library(tibble)
+```
+
+
+# ejercicios
+
+## Ejercicio 1
+
+Usa `map2_dbl()` para sumar elemento a elemento los siguientes vectores:
+
+```{r, eval=FALSE}
+x <- c(10, 20, 30, 40)
+y <- c(1, 2, 3, 4)
+```
+```{r}
+library(purrr)
+
+x <- c(10, 20, 30, 40)
+y <- c(1, 2, 3, 4)
+
+map2_dbl(x, y, ~ .x + .y)
+```
+
+---
+
+## Ejercicio 2
+
+Usa `map2_dbl()` para calcular el área de varios rectángulos. Usa los siguientes vectores:
+
+```{r, eval=FALSE}
+base <- c(2, 5, 10, 4)
+altura <- c(3, 2, 6, 8)
+```
+
+La fórmula es:
+
+\[
+\text{área} = \text{base} \times \text{altura}.
+\]
+
+```{r}
+library(purrr)
+
+base <- c(2, 5, 10, 4)
+altura <- c(3, 2, 6, 8)
+
+map2_dbl(base, altura, ~ .x * .y)
+```
+
+
+---
+
+## Ejercicio 3
+
+Crea un `tibble` con tres columnas: `precio`, `cantidad` y `descuento`.
+
+Luego usa `pmap_dbl()` para calcular el total pagado, usando la fórmula:
+
+\[
+\text{total} = \text{precio} \times \text{cantidad} \times (1 - \text{descuento}).
+\]
+
+```{r}
+library(tibble)
+library(dplyr)
+library(purrr)
+
+productos <- tibble(
+  precio = c(10, 25, 40),
+  cantidad = c(3, 2, 5),
+  descuento = c(0.10, 0.20, 0.15)
+)
+
+productos %>%
+  mutate(
+    total = pmap_dbl(
+      list(precio, cantidad, descuento),
+      function(precio, cantidad, descuento) {
+        precio * cantidad * (1 - descuento)
+      }
+    )
+  )
+```
+
+
+---
+
+## Ejercicio 4
+
+Usa `map2()` para generar muestras normales con las siguientes medias y desviaciones estándar:
+
+```{r, eval=FALSE}
+medias <- list(0, 10, 100)
+desviaciones <- list(1, 2, 10)
+```
+
+Cada muestra debe tener tamaño 5.
+
+```{r}
+library(purrr)
+
+medias <- list(0, 10, 100)
+desviaciones <- list(1, 2, 10)
+
+map2(
+  medias,
+  desviaciones,
+  rnorm,
+  n = 5
+)
+```
+
+
+---
+
+## Ejercicio 5
+
+Usa `keep()` para conservar únicamente las columnas numéricas de `iris`.
+
+```{r}
+library(purrr)
+
+iris_numericas <- keep(iris, is.numeric)
+
+iris_numericas
+```
+
+---
+
+## Ejercicio 6
+
+Usa `discard()` para eliminar las columnas numéricas de `iris`.
+
+
+```{r}
+library(purrr)
+
+iris_no_numericas <- discard(iris, is.numeric)
+
+iris_no_numericas
+```
+
+---
+
+## Ejercicio 7
+
+Usa `some()` y `every()` para responder:
+
+1. ¿Alguna columna de `iris` es factor?
+2. ¿Todas las columnas de `iris` son numéricas?
+
+```{r}
+library(purrr)
+
+# 1
+some(iris, is.factor)
+
+# 2
+every(iris, is.numeric)
+```
+
+
+---
+
+## Ejercicio 8
+
+Usa `detect()` y `detect_index()` para encontrar el primer valor mayor que 50 en el siguiente vector:
+
+```{r, eval=FALSE}
+valores <- c(10, 20, 45, 60, 80, 5)
+```
+
+```{r}
+library(purrr)
+
+valores <- c(10, 20, 45, 60, 80, 5)
+
+detect(valores, ~ .x > 50)
+
+detect_index(valores, ~ .x > 50)
+```
+
+---
+
+## Ejercicio 9
+
+Usa `reduce()` para encontrar los valores comunes en todos los vectores de la siguiente lista:
+
+```{r, eval=FALSE}
+vectores <- list(
+  c(1, 2, 3, 4, 5),
+  c(2, 3, 5, 7),
+  c(0, 2, 3, 5, 9)
+)
+```
+
+```{r}
+library(purrr)
+
+vectores <- list(
+  c(1, 2, 3, 4, 5),
+  c(2, 3, 5, 7),
+  c(0, 2, 3, 5, 9)
+)
+
+reduce(vectores, intersect)
+```
+
+
+
+---
+
+## Ejercicio 10
+
+Usa `accumulate()` para calcular la suma acumulada del siguiente vector:
+
+```{r, eval=FALSE}
+numeros <- c(5, 10, 15, 20)
+```
+```{r}
+library(purrr)
+
+numeros <- c(5, 10, 15, 20)
+
+accumulate(numeros, `+`)
+```
+
